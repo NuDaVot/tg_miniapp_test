@@ -1,30 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram WebApp Example</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Channels</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <h1>WebApp с кнопкой</h1>
-  <p>Нажмите кнопку внизу для отправки данных в бот.</p>
+    <h1>Ваши каналы</h1>
+    <button id="openChannels">Открыть список каналов</button>
 
-  <script>
-    const tg = window.Telegram.WebApp;
+    <script>
+        // Подключение Web Apps API
+        const tg = window.Telegram.WebApp;
 
-tg.ready();
-tg.MainButton.text = "Отправить данные";
-tg.MainButton.show();
-
-tg.MainButton.onClick(() => {
-    const userData = {
-        userId: tg.initDataUnsafe.user.id,
-        username: tg.initDataUnsafe.user.username,
-    };
-
-    tg.sendData(JSON.stringify(userData)); // Отправляем данные в бот
-});
-  </script>
+        document.getElementById("openChannels").addEventListener("click", function () {
+            tg.openChat(); // Открыть список каналов пользователя
+        });
+    </script>
 </body>
 </html>
