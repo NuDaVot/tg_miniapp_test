@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Channels</title>
+    <title>Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <h1>Ваши каналы</h1>
-    <button id="openChannels">Открыть список каналов</button>
+    <h1>Добро пожаловать!</h1>
+    <p>Нажмите кнопку ниже, чтобы взаимодействовать с Telegram API.</p>
+
+    <button id="sendData">Отправить данные</button>
 
     <script>
-        // Подключение Web Apps API
+        // Подключение к Telegram WebApp API
         const tg = window.Telegram.WebApp;
 
-        document.getElementById("openChannels").addEventListener("click", function () {
-            tg.openChat(); // Открыть список каналов пользователя
+        // Инициализация WebApp
+        tg.expand(); // Расширяет приложение на весь экран
+
+        // Функция для отправки данных обратно в Telegram
+        document.getElementById("sendData").addEventListener("click", function () {
+            tg.close(); // Закрывает мини-приложение
         });
+
+        // Вывод информации о пользователе для проверки
+        console.log("User Info:", tg.initDataUnsafe);
     </script>
 </body>
 </html>
