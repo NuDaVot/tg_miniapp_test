@@ -11,6 +11,7 @@
     <p>Нажмите одну из кнопок ниже для взаимодействия с Telegram API.</p>
 
     <button id="selectChannel">Открыть окно выбора канала</button>
+    <button id="selectGroup">Открыть окно выбора группы</button>
 <!--    <button id="openLink">Открыть ссылку Telegram</button>-->
 
     <script>
@@ -23,7 +24,7 @@
         } else {
             tg.expand(); // Расширяет приложение на весь экран
 
-            // Первая кнопка: выбор канала
+            // Кнопка: выбор канала
             document.getElementById("selectChannel").addEventListener("click", function () {
                 const botUsername = "NuDaVotBot"; // Замените на имя вашего бота
                 const permissions = [
@@ -37,6 +38,21 @@
                 ].join("+");
 
                 const url = `https://t.me/${botUsername}?startchannel&admin=${permissions}`;
+                tg.openTelegramLink(url); // Открываем ссылку через Telegram
+            });
+
+            // Кнопка: выбор группы
+            document.getElementById("selectGroup").addEventListener("click", function () {
+                const botUsername = "NuDaVotBot"; // Замените на имя вашего бота
+                const permissions = [
+                    "manage_chat",
+                    "delete_messages",
+                    "restrict_members",
+                    "promote_members",
+                    "pin_messages"
+                ].join("+");
+
+                const url = `https://t.me/${botUsername}?startgroup&admin=${permissions}`;
                 tg.openTelegramLink(url); // Открываем ссылку через Telegram
             });
 
