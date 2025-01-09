@@ -7,40 +7,32 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <h1>Пример WebApp</h1>
-  <p>Данные о пользователе:</p>
-  <pre id="user-data"></pre>
-
-  <button id="close-btn">Закрыть WebApp</button>
+  <h1>WebApp с кнопкой</h1>
+  <p>Нажмите кнопку внизу для отправки данных в бот.</p>
 
   <script>
     const tg = window.Telegram.WebApp;
 
     // Уведомляем Telegram, что WebApp готово
-    Telegram.WebApp.ready();
+    tg.ready();
 
     // Расширяем WebApp на весь экран
-    Telegram.WebApp.expand();
+    tg.expand();
 
-    // Изменяем текст кнопки и показываем её
-    tg.MainButton.text = "Закрыть";
-    tg.MainButton.show();
+    // Настраиваем основную кнопку
+    tg.MainButton.text = "Отправить данные"; // Устанавливаем текст кнопки
+    tg.MainButton.show(); // Показываем основную кнопку
 
-    // Получаем данные о пользователе
-    const userData = tg.initDataUnsafe;
-    console.log("Данные о пользователе:", userData);
-
-    // Выводим данные на страницу
-    document.getElementById("user-data").textContent = JSON.stringify(userData, null, 2);
-
-    // Закрытие WebApp при нажатии на кнопку
-    document.getElementById("close-btn").addEventListener("click", () => {
-      tg.close();
-    });
-
-    // Обработка нажатия на основную кнопку Telegram
+    // Обработка нажатия на основную кнопку
     tg.MainButton.onClick(() => {
-      tg.close();
+      // Данные, которые отправляются в бота
+      const userData = {
+        id: tg.initDataUnsafe.user.id,
+        username: tg.initDataUnsafe.user.username,
+      };
+
+      // Отправка данных в бота
+      tg.sendData(JSON.stringify(userData)); // Передаем данные в бот
     });
   </script>
 </body>
