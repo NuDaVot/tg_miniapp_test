@@ -16,59 +16,82 @@
     <script>
         const tg = window.Telegram.WebApp;
 
-        tg.expand(); // Расширяет приложение на весь экран
+        // Проверяем, доступен ли объект Telegram WebApp
+        if (!tg) {
+            console.error("Telegram WebApp не доступен.");
+            alert("Ошибка: Telegram WebApp не поддерживается в этом окружении.");
+        } else {
+            tg.expand(); // Расширяет приложение на весь экран
 
-        // Первая кнопка: выбор канала
-        document.getElementById("selectChannel").addEventListener("click", function () {
-            const botUsername = "GiveMePublicBot"; // Замените на имя вашего бота
-            const permissions = [
-                "post_messages",
-                "edit_messages",
-                "delete_messages",
-                "restrict_members",
-                "promote_members",
-                "pin_messages",
-                "manage_chat"
-            ].join("+");
+            // Первая кнопка: выбор канала
+            document.getElementById("selectChannel").addEventListener("click", function () {
+                const botUsername = "@NuDaVotBot"; // Замените на имя вашего бота
+                const permissions = [
+                    "post_messages",
+                    "edit_messages",
+                    "delete_messages",
+                    "restrict_members",
+                    "promote_members",
+                    "pin_messages",
+                    "manage_chat"
+                ].join("+");
 
-            const url = `https://t.me/${botUsername}?startchannel&admin=${permissions}`;
-            tg.openTelegramLink(url); // Открываем ссылку через Telegram
-        });
+                const url = `https://t.me/${botUsername}?startchannel&admin=${permissions}`;
+                tg.openTelegramLink(url); // Открываем ссылку через Telegram
+            });
 
-        // Вторая кнопка: кастомная функция
-        document.getElementById("openLink").addEventListener("click", function () {
-            const url = "https://t.me/GiveMePublicBot?start=test"; // Замените ссылку на вашу
-            openTelegramLink(url, { force_request: true });
-        });
+            // Вторая кнопка: кастомная функция
+            document.getElementById("openLink").addEventListener("click", function () {
+                const url = "https://t.me/GiveMePublicBot?start=test"; // Замените ссылку на вашу
+                openTelegramLink(url, { force_request: true });
+            });
 
-        // Кастомная функция WebApp.openTelegramLink
-        function openTelegramLink(url, options) {
-            var a = document.createElement('A');
-            a.href = url;
+            // Кастомная функция WebApp.openTelegramLink
+            function openTelegramLink(url, options) {
+                var a = document.createElement('A');
+                a.href = url;
 
-            // Проверка протокола
-            if (a.protocol != 'http:' && a.protocol != 'https:') {
-                console.error('[Telegram.WebApp] Url protocol is not supported', url);
-                throw Error('WebAppTgUrlInvalid');
-            }
-
-            // Проверка хоста
-            if (a.hostname != 't.me') {
-                console.error('[Telegram.WebApp] Url host is not supported', url);
-                throw Error('WebAppTgUrlInvalid');
-            }
-
-            var path_full = a.pathname + a.search;
-            options = options || {};
-
-            if (tg.isIframe || tg.versionAtLeast('6.1')) {
-                var req_params = { path_full: path_full };
-                if (options.force_request) {
-                    req_params.force_request = true;
+                // Проверка протокола
+                if (a.protocol !== 'http:' && a.protocol !== 'https:') {
+                    console.error('[Telegram.WebApp] Url protocol is not supported', url);
+                    throw new Error('WebAppTgUrlInvalid');
                 }
-                tg.postEvent('web_app_open_tg_link', false, req_params);
-            } else {
-                location.href = 'https://t.me' + path_full;
+
+                // Проверка хоста
+                if (a.hostname !== 't.me') {
+                    console.error('[Telegram.WebApp] Url host is not supported', url);
+                    throw new Error('WebAppTgUrlInvalid');
+                }
+
+                var path_full = a.pathname + a.search;
+                options = options || {};
+
+                // Проверяем, поддерживает ли WebApp нужные функции
+                if (tg.isIframe || (typeof tg.version === 'string' && compareVersion(tg.version, '6.1') >= 0)) {
+                    var req_params = { path_full: path_full };
+                    if (options.force_request) {
+                        req_params.force_request = true;
+                    }
+                    tg.postEvent('web_app_open_tg_link', false, req_params);
+                } else {
+                    location.href = 'https://t.me' + path_full;
+                }
+            }
+
+            // Функция сравнения версий
+            function compareVersion(v1, v2) {
+                const v1Parts = v1.split('.').map(Number);
+                const v2Parts = v2.split('.').map(Number);
+
+                for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
+                    const v1Part = v1Parts[i] || 0;
+                    const v2Part = v2Parts[i] || 0;
+
+                    if (v1Part > v2Part) return 1;
+                    if (v1Part < v2Part) return -1;
+                }
+
+                return 0;
             }
         }
     </script>
