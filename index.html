@@ -14,6 +14,9 @@
     <button id="selectGroup">Открыть окно выбора группы</button>
 <!--    <button id="openLink">Открыть ссылку Telegram</button>-->
 
+    <h2>Назначения:</h2>
+    <p id="assignmentResult">Бот пока не назначен админом ни в одном канале или группе.</p>
+
     <script>
         const tg = window.Telegram.WebApp;
 
@@ -23,6 +26,8 @@
             alert("Ошибка: Telegram WebApp не поддерживается в этом окружении.");
         } else {
             tg.expand(); // Расширяет приложение на весь экран
+
+            const assignmentResult = document.getElementById("assignmentResult");
 
             // Кнопка: выбор канала
             document.getElementById("selectChannel").addEventListener("click", function () {
@@ -38,7 +43,10 @@
                 ].join("+");
 
                 const url = `https://t.me/${botUsername}?startchannel&admin=${permissions}`;
-                tg.openTelegramLink(url); // Открываем ссылку через Telegram
+                tg.openTelegramLink(url);
+
+                // Обновление информации на странице
+                assignmentResult.textContent = `Бот назначен админом в канале: ${botUsername}`;
             });
 
             // Кнопка: выбор группы
@@ -53,7 +61,10 @@
                 ].join("+");
 
                 const url = `https://t.me/${botUsername}?startgroup&admin=${permissions}`;
-                tg.openTelegramLink(url); // Открываем ссылку через Telegram
+                tg.openTelegramLink(url);
+
+                // Обновление информации на странице
+                assignmentResult.textContent = `Бот назначен админом в группе: ${botUsername}`;
             });
 
             // Вторая кнопка: кастомная функция
