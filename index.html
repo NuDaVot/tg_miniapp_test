@@ -3,47 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram WebApp</title>
+  <title>Telegram WebApp Example</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #0088cc;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #005f88;
-    }
-  </style>
 </head>
 <body>
-  <h1>Добро пожаловать!</h1>
-  <p>Это ваше мини-приложение</p>
-  <button id="get-data">Получить данные</button>
+  <h1>Пример WebApp</h1>
+  <p>Данные о пользователе:</p>
+  <pre id="user-data"></pre>
+
+  <button id="close-btn">Закрыть WebApp</button>
 
   <script>
-    // Инициализация Telegram WebApp
     const tg = window.Telegram.WebApp;
 
-    tg.expand(); // Развернуть WebApp на весь экран
+    // Уведомляем Telegram, что WebApp готово
+    Telegram.WebApp.ready();
 
-    // Обработчик кнопки
-    document.getElementById('get-data').addEventListener('click', () => {
-      const initDataUnsafe = tg.initDataUnsafe; // Данные о пользователе
-      alert(`Ваше имя: ${initDataUnsafe.user.first_name}`);
-    });
+    // Расширяем WebApp на весь экран
+    Telegram.WebApp.expand();
 
-    // Показать кнопку Telegram
+    // Изменяем текст кнопки и показываем её
     tg.MainButton.text = "Закрыть";
     tg.MainButton.show();
+
+    // Получаем данные о пользователе
+    const userData = tg.initDataUnsafe;
+    console.log("Данные о пользователе:", userData);
+
+    // Выводим данные на страницу
+    document.getElementById("user-data").textContent = JSON.stringify(userData, null, 2);
+
+    // Закрытие WebApp при нажатии на кнопку
+    document.getElementById("close-btn").addEventListener("click", () => {
+      tg.close();
+    });
+
+    // Обработка нажатия на основную кнопку Telegram
+    tg.MainButton.onClick(() => {
+      tg.close();
+    });
   </script>
 </body>
 </html>
