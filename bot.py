@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types.web_app_info import WebAppInfo
-from aiogram.filters import Command
+from aiogram.types import ChatMemberUpdated
+from aiogram.filters import Command, ChatMemberUpdatedFilter
 
 # Настраиваем логирование
 logging.basicConfig(level=logging.INFO)
@@ -41,13 +42,38 @@ async def send_welcome(message: Message):
         await message.answer("Нажмите кнопку ниже, чтобы открыть список каналов:", reply_markup=keyboard)
     except Exception as e:
         logger.error(f"Ошибка в обработчике /start: {e}")
-        await message.answer("Произошла ошибка. Попробуйте позже.")
+
+
+# Обработчик добавления бота в новый канал или группу
+@dp.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=True))
+async def handle_new_chat_member(event: ChatMemberUpdated):
+    try:
+        # Проверяем, был ли бот добавлен как администратор
+        if event.new_chat_member.status == "administrator":
+            chat = event.chat
+            chat_type = "канал" if chat.type == "channel" else "группа"
+            logger.info(f"Бот добавлен как администратор в {chat_type}: {chat.title} {chat.id}")
+            print(f"Бот добавлен как администратор в {chat_type}: {chat.title} {chat.id}")
+
+            # Получение списка администраторов
+            admins = await bot.get_chat_administrators(chat.id)
+            admin_list = "\n".join([f"- {admin.user.full_name} (@{admin.user.username}) {admin.user.id}"
+                                     if admin.user.username else f"- {admin.user.full_name}"
+                                     for admin in admins])
+
+            # Вывод информации в консоль
+            print(f"Список администраторов {chat_type} '{chat.title}':\n{admin_list}")
+
+
+    except Exception as e:
+        logger.error(f"Ошибка в обработчике добавления бота: {e}")
 
 
 # Основная функция
 async def main():
     # Регистрируем обработчики
     dp.message.register(send_welcome)
+    dp.my_chat_member.register(handle_new_chat_member)
 
     logger.info("Бот запущен...")
     # Запускаем бота
