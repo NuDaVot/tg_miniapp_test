@@ -13,27 +13,18 @@
   <script>
     const tg = window.Telegram.WebApp;
 
-    // Уведомляем Telegram, что WebApp готово
-    tg.ready();
+tg.ready();
+tg.MainButton.text = "Отправить данные";
+tg.MainButton.show();
 
-    // Расширяем WebApp на весь экран
-    tg.expand();
-
-    // Настраиваем основную кнопку
-    tg.MainButton.text = "Отправить данные"; // Устанавливаем текст кнопки
-    tg.MainButton.show(); // Показываем основную кнопку
-
-    // Обработка нажатия на основную кнопку
-    tg.MainButton.onClick(() => {
-      // Данные, которые отправляются в бота
-      const userData = {
-        id: tg.initDataUnsafe.user.id,
+tg.MainButton.onClick(() => {
+    const userData = {
+        userId: tg.initDataUnsafe.user.id,
         username: tg.initDataUnsafe.user.username,
-      };
+    };
 
-      // Отправка данных в бота
-      tg.sendData(JSON.stringify(userData)); // Передаем данные в бот
-    });
+    tg.sendData(JSON.stringify(userData)); // Отправляем данные в бот
+});
   </script>
 </body>
 </html>
