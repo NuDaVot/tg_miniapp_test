@@ -8,9 +8,9 @@
 </head>
 <body>
     <h1>Добро пожаловать!</h1>
-    <p>Нажмите кнопку ниже, чтобы взаимодействовать с Telegram API.</p>
+    <p>Нажмите кнопку ниже, чтобы выбрать канал, где вы администратор.</p>
 
-    <button id="sendData">Отправить данные</button>
+    <button id="selectChannel">Выбрать канал</button>
 
     <script>
         // Подключение к Telegram WebApp API
@@ -19,9 +19,24 @@
         // Инициализация WebApp
         tg.expand(); // Расширяет приложение на весь экран
 
-        // Функция для отправки данных обратно в Telegram
-        document.getElementById("sendData").addEventListener("click", function () {
-            tg.close(); // Закрывает мини-приложение
+        // Функция для отправки команды на открытие окна выбора каналов
+        document.getElementById("selectChannel").addEventListener("click", function () {
+            const botUsername = "GiveMePublicBot"; // Замените на имя вашего бота
+            const permissions = [
+                "post_messages",
+                "edit_messages",
+                "delete_messages",
+                "restrict_members",
+                "promote_members",
+                "pin_messages",
+                "manage_chat"
+            ].join("+");
+
+            // Формируем путь для открытия окна выбора каналов
+            const path = `/${botUsername}?startchannel&admin=${permissions}`;
+
+            // Открываем окно выбора каналов
+            tg.postEvent("web_app_open_tg_link", { path_full: path });
         });
 
         // Вывод информации о пользователе для проверки
